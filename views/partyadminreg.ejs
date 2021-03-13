@@ -1,0 +1,50 @@
+<%- include('partials/paheader') %>
+<div class="container mt-5">
+  <h1>Party Admin Register</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Makes POST request to /register route -->
+          <form action="/partyadminreg" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="email">First name</label>
+                <input type="text" class="form-control" name="fname" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Last name</label>
+                <input type="text" class="form-control" name="lname" required>
+              </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="partyname">Party name</label>
+                <input type="text" class="form-control" name="partyname" required>
+              </div>
+              <div class="form-group">
+                <label for="partyinfo">Party info</label>
+                <input type="textarea" class="form-control" name="partyinfo" rows="2" cols="50" required>
+              </div>
+            <div class="form-group">
+                <label for="partylogo">Party logo</label>
+                <input type="file" class="form-control" name="partylogo" multiple required>
+              </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-dark">Register</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>
