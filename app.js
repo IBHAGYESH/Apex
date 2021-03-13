@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
+const base64 = require('base-64');
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -211,11 +212,18 @@ app.get("/newadata", function(req, res){
         res.render("newadata");
     }else{
         res.redirect("/adminlogin");
-    }
+    }   
 });
 app.get("/getadata", function(req, res){
+
+    let data = req.headers.authentication;
+    console.log(data)
+    let info =  base64.decode(data);
+    let info2 = info.split(':');
+   
+    console.log(info2)
     Adata.findOne({
-        $and :[{aadharNumber:req.header.aadharnumber}, {mobileNumber:req.header.mobilenumber}]
+        $and :[{aadharNumber:Number(info2[1])}, {mobileNumber:Number(info2[3])}]
     }, function(err, foundUser){
         if(foundUser){
             res.send(foundUser);
