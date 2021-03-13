@@ -215,7 +215,7 @@ app.get("/newadata", function(req, res){
 });
 app.get("/getadata", function(req, res){
     Adata.findOne({
-        $and :[{aadharNumber:req.body.aadharnumber}, {mobileNumber:req.body.mobilenumber}]
+        $and :[{aadharNumber:req.header.aadharnumber}, {mobileNumber:req.header.mobilenumber}]
     }, function(err, foundUser){
         if(foundUser){
             res.send(foundUser);
