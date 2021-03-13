@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+<div class="container mt-5">
+  <h1>ADD NEW AADHAR DATA</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Makes POST request to /register route -->
+          <form action="/newadata" method="POST">
+            <div class="form-group">
+                <label for="fname">First name</label>
+                <input type="text" class="form-control" name="fname" required>
+              </div>
+              <div class="form-group">
+                <label for="lname">Last name</label>
+                <input type="text" class="form-control" name="lname" required>
+              </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">DOB</label>
+                <input type="date" class="form-control" name="dob" required>
+              </div>
+            <div class="form-group">
+                <label for="radio">GENDER</label>
+                <input type="radio" class="form-control" id="male" name="gender" value="male" required>
+                <label for="male">Male</label><br>
+                <input type="radio" class="form-control" id="female" name="gender" value="female" required>
+                <label for="female">Female</label><br>
+              </div>
+            <div class="form-group">
+                <label for="address">ADDRESS</label>
+                <input type="textarea" class="form-control" name="address" rows="2" cols="50" required>
+              </div>
+            <div class="form-group">
+              <label for="pincode">PINCODE</label>
+              <input type="text" class="form-control" name="pincode" inputmode="numeric" pattern="{12}" maxlength="6" required>
+            </div>
+            <div class="form-group">
+                <label for="mobilenumber">MOBILE NUMBER</label>
+                <input type="tel" class="form-control" name="mobilenumber"  pattern="{10}" maxlength="10" required>
+              </div>
+            <div class="form-group">
+                <label for="mobilenumber">AADHAR NUMBER</label>
+                <input type="text" class="form-control" name="aadharnumber" inputmode="numeric" pattern="{12}" maxlength="12" required>
+              </div>
+            <button type="submit" class="btn btn-dark">ADD DATA</button>
+            <button type="reset" class="btn btn-dark">RESET</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>
