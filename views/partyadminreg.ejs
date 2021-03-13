@@ -1,12 +1,7 @@
 <%- include('partials/header') %>
-<div class="container mt-5">
+<div class="container-big">
+  <div class="login-box">
   <h1>Party Admin Register</h1>
-
-  <div class="row">
-    <div class="col-sm-8">
-      <div class="card">
-        <div class="card-body">
-
           <!-- Makes POST request to /register route -->
           <form action="/partyadminreg" method="POST" enctype="multipart/form-data">
             <div class="form-group">
@@ -39,10 +34,6 @@
             </div>
             <button type="submit" class="btn btn-dark">Register</button>
           </form>
-
-        </div>
-      </div>
-    </div>
 
   </div>
 </div>
