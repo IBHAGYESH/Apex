@@ -366,6 +366,10 @@ app.get("/userlogout", function(req, res){
   });
 //*********************************************************USERS POST ROUTES**************************************************************************/
 app.post("/userreg",upload.fields([{name:"profileimage", maxCount: 1}, {name:"aadharfrontimage", maxCount: 1},{name:"aadharbackimage", maxCount: 1}]), async function(req, res){
+    
+    console.log(req.headers)
+    console.log(req.body)
+    
     const verify = req.body.accountverified;
     const rejectCount = req.body.regrejectcount;
     const aadharnumber = req.body.username;
