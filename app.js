@@ -25,8 +25,10 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-mongoose.connect("mongodb+srv://admin-bhagyesh:test123@apexevoting.uci1e.mongodb.net/ApexEvoting", {
+const username = process.env.USER_NAME;
+const password = process.env.PASSWORD;
+const dbname = process.env.DB_NAME;
+mongoose.connect("mongodb+srv://"+username+":"+password+"@apexevoting.uci1e.mongodb.net/"+dbname, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
