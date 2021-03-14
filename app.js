@@ -1,13 +1,14 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
-const base64 = require('base-64');
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const cloudinary = require("cloudinary");
+
+
 
 require("./cloudinary");
 const upload = require("./multer");
@@ -36,7 +37,7 @@ mongoose.connect("mongodb+srv://"+username+":"+password+"@apexevoting.uci1e.mong
 mongoose.set("useCreateIndex", true);
 
 
-/*********************************************************ADMIN AREA DB_CONFIG***********************************************************************/
+//*********************************************************ADMIN AREA DB_CONFIG***********************************************************************/
 // ADMIN REGISTRATION AND LOGIN 
 const adminSchema = new mongoose.Schema({
     fname: {
@@ -134,6 +135,48 @@ passport.deserializeUser(function(PartyAdmin, done) {
   });
 //*********************************************************PARTY ADMIN AREA DB_CONFIG FINISH***********************************************************************/
 
+//*********************************************************PARTY MEMBER AREA DB_CONFIG***********************************************************************/
+const partyMemberSchema = new mongoose.Schema({
+    fname: {
+        type:String,
+        required: true},
+    lname: {
+        type:String,
+        required: true},
+    username: {
+        type:String,
+        required: true},
+    partyname: {
+        type:String,
+        required: true},
+    votes: {
+        type:Number,
+        required: true},
+    verifiedposition:{
+        type:Boolean,
+        required: true},
+    elected:{
+        type:Boolean,
+        required: true},
+    state: String,
+    cast: String,
+    Constituency:String,
+    photo:String,
+    partylogo: String,
+    password: String
+});
+partyMemberSchema.plugin(passportLocalMongoose);
+const PartyMember = new mongoose.model("PartyMember", partyMemberSchema);
+passport.use(PartyMember.createStrategy());
+passport.serializeUser(function(PartyMember, done) {
+    done(null, PartyMember);
+  });
+  
+passport.deserializeUser(function(PartyMember, done) {
+    done(null, PartyMember);
+  });
+//*********************************************************PARTY MEMBER AREA DB_CONFIG FINISH***********************************************************************/
+
 //*********************************************************USERS DB_CONFIG**********************************************************************************/
 const userSchema = new mongoose.Schema({
     username: {
@@ -170,6 +213,13 @@ passport.deserializeUser(function(User, done) {
     done(null, User);
   });
 //*********************************************************USERS DB_CONFIG FINISH**********************************************************************************/
+
+
+
+
+
+
+
 
 
 
@@ -212,18 +262,11 @@ app.get("/newadata", function(req, res){
         res.render("newadata");
     }else{
         res.redirect("/adminlogin");
-    }   
+    }
 });
 app.get("/getadata", function(req, res){
-
-    let data = req.headers.authentication;
-    console.log(data)
-    let info =  base64.decode(data);
-    let info2 = info.split(':');
-   
-    console.log(info2)
     Adata.findOne({
-        $and :[{aadharNumber:Number(info2[1])}, {mobileNumber:Number(info2[3])}]
+        $and :[{aadharNumber:req.body.aadharnumber}, {mobileNumber:req.body.mobilenumber}]
     }, function(err, foundUser){
         if(foundUser){
             res.send(foundUser);
@@ -232,7 +275,58 @@ app.get("/getadata", function(req, res){
         }
     });
 });
+app.get("/userverification", function(req, res){
+    if(req.isAuthenticated()){
+        User.aggregate([
+            {
+              $lookup:
+                {
+                  from: "adatas",
+                  localField: "username",
+                  foreignField: "aadharNumber",
+                  as: "userinfo"
+                }
+           },
+           { $match : { regaccepted : "false", regrejected: "false" } },
+           { $unwind : "$userinfo" }
+         ]).exec(function(err,results){
+             if(err) throw err;
+             console.log(results);
+             res.render("userverification", {newListItems: results});
+            });
+        // User.find({regaccepted:false}, function(err, foundItems){
+        //     if (foundItems) {
+        //         console.log(foundItems);
+        //         res.render("userverification", {newListItems: foundItems});
+        //     } else {
+        //         res.status(404).send({ error: "Not Found" });
+        //     }
+        //   });
+    }else{
+        res.redirect("/adminlogin");
+    }
+});
 //*********************************************************ADMIN AREA POST ROUTES***********************************************************************/  
+app.post("/delete", function(req, res){
+    const checkedItemId = req.body.checkbox;
+    const listName = req.body.listName;
+  
+    if (listName === "Today") {
+      Item.findByIdAndRemove(checkedItemId, function(err){
+        if (!err) {
+          console.log("Successfully deleted checked item.");
+          res.redirect("/");
+        }
+      });
+    } else {
+      List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, function(err, foundList){
+        if (!err){
+          res.redirect("/" + listName);
+        }
+      });
+    }
+});
+
 app.post("/adminreg", function(req, res){
     Admin.register({username: req.body.username, fname: req.body.fname, lname: req.body.lname}, req.body.password, function(err){
         if(err){
@@ -275,24 +369,31 @@ app.post("/newadata", function(req, res){
     });
     newAdata.save(function(err){
         if(!err){
-            res.send("successfully added aadhar data");
+            res.redirect("/newadata");
         }else{
             res.status(502).send({ error: "Something went wrong!" });
         }
     });
 });
-app.post("/area", function(req, res){
-    Area.updateOne(
-        { state: req.body.statename },
-        { $push: { city: [req.body.cityname], Constituency:[req.body.Constituency] } },
-        function(err, result) {
-          if (err) {
-            res.send(err);
-          } else {
-            res.send(result);
-          }
+app.post("/regaccept", function(req, res){
+    User.update({_id: req.body.accept},{ $set: {regaccepted:true}} ,function(err){
+        if(!err){
+            res.status(200);
+            res.redirect("/userverification")
+        }else{
+            res.status(502).sendStatus(err);
         }
-      );
+    });
+});
+app.post("/regreject", function(req, res){
+    User.update({_id: req.body.reject}, {$set:{regrejected:true, rejectCount:rejectCount+1}} ,function(err){
+        if(!err){
+            res.status(200);
+            res.redirect("/userverification")
+        }else{
+            res.status(502).sendStatus(err);
+        }
+    });
 });
 //*********************************************************ADMIN AREA ROUTES FINISH***********************************************************************/
 
@@ -351,12 +452,28 @@ app.post("/partyadminlogin", function(req, res){
 });
 //*********************************************************PARTY ADMIN AREA ROUTES FINISH***********************************************************************/
 
+//*********************************************************PARTY MEMBER AREA ROUTES START***********************************************************************/
+//*********************************************************PARTY MEMBER AREA GET ROUTES***********************************************************************/
+app.get("/partymemberreg", function(req, res){
+    res.render("partymemberreg");
+});
+app.get("/partymemberlogin", function(req, res){
+    res.render("partymemberlogin");
+});
+app.get("/partymemberhome", function(req, res){
+    if(req.isAuthenticated()){
+        res.render("partymemberhome");
+    }else{
+        res.redirect("/partymemberlogin");
+    }
+})
+app.get("/partymemberlogout", function(req, res){
+    req.logout();
+    res.redirect("/");
+  });
+//*********************************************************PARTY MEMBER AREA POST ROUTES***********************************************************************/
 
-
-
-
-
-
+//*********************************************************PARTY MEMBER AREA ROUTES FINISH***********************************************************************/
 
 //*********************************************************USERS ROUTES START***********************************************************************/
 //*********************************************************USERS GET ROUTES**************************************************************************/
@@ -366,10 +483,6 @@ app.get("/userlogout", function(req, res){
   });
 //*********************************************************USERS POST ROUTES**************************************************************************/
 app.post("/userreg",upload.fields([{name:"profileimage", maxCount: 1}, {name:"aadharfrontimage", maxCount: 1},{name:"aadharbackimage", maxCount: 1}]), async function(req, res){
-    
-    console.log(req.headers)
-    console.log(req.body)
-    
     const verify = req.body.accountverified;
     const rejectCount = req.body.regrejectcount;
     const aadharnumber = req.body.username;

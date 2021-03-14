@@ -1,0 +1,40 @@
+<%- include("partials/header") -%>
+
+  
+
+  
+
+
+  <%  newListItems.forEach(function(item){ %>
+<div class="box">
+    <form action="/regaccept" method="post">  
+        <div class="item">
+        
+            <img src="<%=item.profileimage%>" class="verifypimg1"></img>
+            <img src="<%=item.aadharfrontimage%>" class="verifypimg2"></img><br>
+            <img src="<%=item.aadharbackimage%>" class="verifypimg3"></img>
+        </div>
+        <div class="userinfo">
+        <div class="aadharnumber"><h6>Aadhar Number : <%=item.username%></h6></div>
+        <div class="name"><h6>Name : <%=item.userinfo.fname%> <%=item.userinfo.lname%></h6></div>
+        <div class="email"><h6>Name : <%=item.userinfo.username%></h6></div>
+        <div class="dob"><h6>DOB : <%=item.userinfo.dob%></h6></div>
+        <div class="gender"><h6>Gender : <%=item.userinfo.gender%></h6></div>
+        <div class="address"><h6>Address : <%=item.userinfo.address%></h6></div>
+        <div class="pincode"><h6>Pincode : <%=item.userinfo.pincode%></h6></div>
+        <div class="mobilenumber"><h6>Pincode : <%=item.userinfo.mobileNumber%></h6></div>
+        <button type="submit" class="btn btn-success" value="<%=item._id%>" name="accept">Accept</button>
+        </form>
+        <form  action="/regreject" method="post">
+        <button type="submit" class="btn btn-danger" value="<%=item._id%>" name="reject">Reject</button>
+        </form>
+</div>
+    
+</div>
+
+  <%  }) %>
+
+
+     
+
+<%- include("partials/footer") -%>
