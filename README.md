@@ -25,11 +25,43 @@ On the Day of Election Voter would have to login and put a vote to the desired c
 
 ![usecase](https://user-images.githubusercontent.com/60515418/111027991-ab6c9180-8419-11eb-83f5-99b63dca8821.JPG)
 
+## Verifying Binaries
+**1. Clone the repository**<br/>
+**2. Run the commands to install node package manager in Command-Line Interface**<br/>
+`npm install` or `npm i`<br/>
+**3. Open the server's folder and set up a .env file and paste the following in it**
+```
+SESSION_SECRET=secret1
+CLOUDINARY_CLOUD_NAME=ddgnxopcv
+CLOUDINARY_KEY=359437366889111
+CLOUDINARY_SECRET=qCOsEIdEiFQTzrbFEZCXMSgpQPU
+USER_NAME=admin-bhagyesh
+PASSWORD=test123
+DB_NAME=ApexEvoting
+```
+**4. To open client side type `npm start` in CLI**
+**5. To open backend type 'nodemon app.js**
 
 ## Technological stack
-Resource Management and Content pool: `Cloudinary`
-<br/> Databases: `MongoDB`
-<br/> Backend: Multipage Application using  `Node JS` and `Express JS`
+ **Databases** - MongoDB
+ <br/>
+ ### `frontend`:<br/>
+**material-ui** - React components for faster and easier web development<br/>
+**axios** - Promise based HTTP client for the browser and node.js<br/>
+**react** - JavaScript library for building user interfaces or UI components<br/>
+**redux** - A Predictable State Container for JS Apps
+<br/> 
+### `Backend`:
+**base-64** - Base64 is a encoding algorithm <br/>
+**cloudinary** - Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline.<br/>
+
+**dotenv** - Dotenv is a zero-dependency module that loads environment variables from a .env file into process.env. Storing configuration in the environment separate from code is based on The 
+Twelve-Factor App methodology.<br/>
+**ejs** - Embedded JavaScript templates <br/>
+**Express** - Fast, unopinionated, minimalist web framework for node.<br/>
+**Mongoose**-Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. Mongoose supports both promises and callbacks.<br/>
+**multer** - Middleware for handling 'multipart/form-data'<br/>
+**passport** - Simple, unobtrusive authentication for Node.js.
 <br/>
 
 ## Developers: 
