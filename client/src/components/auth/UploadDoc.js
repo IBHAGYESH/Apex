@@ -53,13 +53,13 @@ export default function UploadDoc() {
    
  
   const nextstep = async (e)=>{
-    // dispatch({type: 'reg_next',step2: true,'data':{
-    //         profileimg:profileimg,
-    //         aadharfrontimg:aadharfrontimg,
-    //         aadharBackimg:aadharBackimg,
-    //         ...activeStep
-    //     }})
-    //     dispatch({type: 'step2',step2: true})
+     dispatch({type: 'reg_next',step2: true,'data':{
+             profileimg:profileimg,
+            aadharfrontimg:aadharfrontimg,
+             aadharBackimg:aadharBackimg,
+           ...activeStep
+        }})
+         dispatch({type: 'step2',step2: true})
      var data = {
         profileimg:activeStep.profileimgURL,
         aadharfrontimg:activeStep.aadharfrontimgURL,
