@@ -14,8 +14,9 @@ import DoneIcon from '@material-ui/icons/Done';
 import { Copyright } from "../Copyright";
 import { useStyles } from "./css/registration_css";
 import { useDispatch, useSelector } from "react-redux";
-import axiosCalls from "../api/axiosCalls";
+import {axiosCalls} from "../api/axiosCalls";
 import base64 from "base-64";
+
 export default function Registration() {
   const classes = useStyles();
   const dispatch = useDispatch();

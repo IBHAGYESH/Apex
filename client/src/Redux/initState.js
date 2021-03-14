@@ -1,6 +1,12 @@
 export const registration = {
     'next':0,
     'data':{},
+    'profileimg':'',
+    'profileimgURL':'',
+    'aadharfrontimg':'',
+    'aadharfrontimgURL':'',
+    'aadharBackimg':'',
+    'aadharBackimgURL':'',
     'fill_from':false,
     'step1':false,
     'step1Info':'Fill Registration From For E-Vote',

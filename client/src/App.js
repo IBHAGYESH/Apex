@@ -33,7 +33,7 @@ function App() {
               <Switch>
 
                 <Route exact path="/">
-                  
+                  <Redirect to='/registration'/>
                 </Route>
                 <Route exact path="/login">
                   <Login/>
