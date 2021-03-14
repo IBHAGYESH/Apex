@@ -9,61 +9,112 @@ import { useStyles } from "./css/UploadDoc_css";
 import { useDispatch, useSelector } from "react-redux";
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
-import axiosCalls from "../api/axiosCalls";
+import {axiosCalls,axiosCallsFile} from "../api/axiosCalls";
+import axios from "axios";
 import DoneIcon from '@material-ui/icons/Done';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
+import { AssistantTwoTone } from '@material-ui/icons';
+import firebase from "firebase/app";
+import "firebase/storage";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCmvp-4HZC16tgi6zdvSbPdLjEvZiI1UWw",
+    authDomain: "apex-5c532.firebaseapp.com",
+    projectId: "apex-5c532",
+    storageBucket: "apex-5c532.appspot.com",
+    messagingSenderId: "61266754390",
+    appId: "1:61266754390:web:2196c8cc98f0d749a574f7",
+    measurementId: "G-HZ0T9009ZM"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+var storage = firebase.storage();
 
 export default function UploadDoc() {
-
-    const [profileimg , setProfileimg] = React.useState(null)
-    const [aadharfrontimg , setAadharfrontimg] = React.useState(null)
-    const [aadharBackimg , setAsdharbackimg] = React.useState(null)
-    const classes = useStyles();
+ const classes = useStyles();
     const dispatch = useDispatch();
     const activeStep = useSelector(state =>({
         next: state.next,
         step1: state.step1,
         data: state.data,
+        profileimg:state.profileimg,
+        aadharfrontimg:state.aadharfrontimg,
+        aadharBackimg:state.aadharBackimg,
         ...state
     }))  
+    const [profileimg , setProfileimg] = React.useState(null);
+    const [profileimgURL , setProfileimgURL] = React.useState();
+    const [aadharfrontimg , setAadharfrontimg] = React.useState(null);
+    const [aadharfrontimgURL , setAadharfrontimgURL] = React.useState();
+    const [aadharBackimg , setAsdharbackimg] = React.useState(null);
+    const [aadharBackimgURL , setAsdharbackimgURL] = React.useState(); 
+
+   
  
   const nextstep = async (e)=>{
-
-    const data = {
-        profileimage:profileimg,
-        aadharfrontimage:aadharfrontimg,
-        aadharbackimage:aadharBackimg,
+     dispatch({type: 'reg_next',step2: true,'data':{
+             profileimg:profileimg,
+            aadharfrontimg:aadharfrontimg,
+             aadharBackimg:aadharBackimg,
+           ...activeStep
+        }})
+         dispatch({type: 'step2',step2: true})
+     var data = {
+        profileimg:activeStep.profileimgURL,
+        aadharfrontimg:activeStep.aadharfrontimgURL,
+        aadharBackimg:activeStep.aadharBackimgURL,
         username:activeStep.data.aadharNo,
         password:activeStep.data.password
-        
-
-    } 
-    dispatch({type: 'reg_next',step2: true,'data':{
-        profileimg:profileimg,
-        aadharfrontimg:aadharfrontimg,
-        aadharBackimg:aadharBackimg,
-        ...activeStep
-    }})
-    dispatch({type: 'step2',step2: true})
+   }
+        console.log('====>',activeStep)
     // api call registration
-    await axiosCalls('POST','/userreg',data)
+    await axiosCallsFile('POST','/userreg',data)
    
   }
 
   const headlCheger = (event,id)=>{
       console.log(event,id)
+      //var img1= event.target.files[0];
     if(id == 1){
-           console.log("profile")
-         setProfileimg(event)
+           
+        
+
+        
+       //dispatch({type: 'profileimg','profileimg':img1})
+        // setProfileimg(img1);
+        var img1= event.target.files[0];
+        //dispatch({type: 'profileimgURL',profileimg: img1});
+         console.log('--->',activeStep.profileimg,'--->',img1)
+         const uploadimg = storage.ref('img'+img1.name).put(img1);
+         uploadimg.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            dispatch({type: 'profileimgURL',profileimgURL: downloadURL});
+            dispatch({type: 'profileimg',profileimg: img1});
+          });
+           
+         
     }
     else if(id == 2){
-         console.log("Aadharfrontimg")
-        setAadharfrontimg(event)
+        var img1= event;
+        setAadharfrontimg(event) 
+        console.log(aadharfrontimg)
+        console.log('--->',activeStep.profileimg,'--->',img1)
+        const uploadimg = storage.ref('img'+img1.name).put(img1);
+        uploadimg.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            dispatch({type: 'aadharfrontimg',aadharfrontimg: img1});
+            dispatch({type: 'aadharfrontimgURL',aadharfrontimgURL: downloadURL});
+          });
     }
     else if(id == 3){
-         console.log("Asdharbackimg")
+        var img1= event;
         setAsdharbackimg(event)
+        console.log(aadharBackimg)
+        console.log('--->',activeStep.profileimg,'--->',img1)
+         const uploadimg = storage.ref('img'+img1.name).put(img1);
+         uploadimg.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            dispatch({type: 'aadharBackimg',aadharBackimg: img1});
+            dispatch({type: 'aadharBackimgURL',aadharBackimgURL: downloadURL});
+          });
     }
   }
 
@@ -82,9 +133,9 @@ export default function UploadDoc() {
 
                     
                         <label htmlFor="icon-button-file1" className={classes.centerIcon}>
-                          <input accept=" .jpg,.jpeg,.png" className={classes.input} onChange={e=>headlCheger(e.target.files[0],1)} id="icon-button-file1" type="file" />
+                          <input accept=" .jpg,.jpeg,.png" className={classes.input} onChange={e=>headlCheger(e,1)} id="icon-button-file1" type="file" />
                             <IconButton color="inherit" aria-label="upload picture" component="span">
-                            {profileimg == null ?<PhotoCamera  fontSize="large" />: <DoneIcon/>}
+                            {profileimg == null && profileimg == '' ?<PhotoCamera  fontSize="large" />: <DoneIcon/>}
                             </IconButton>                         
                             
                         </label>
