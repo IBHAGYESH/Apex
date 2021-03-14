@@ -8,10 +8,24 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const cloudinary = require("cloudinary");
+const firebase = require("firebase/app");
+require("firebase/storage")
 
 require("./cloudinary");
 const upload = require("./multer");
 
+const firebaseConfig = {
+    apiKey: "AIzaSyCmvp-4HZC16tgi6zdvSbPdLjEvZiI1UWw",
+    authDomain: "apex-5c532.firebaseapp.com",
+    projectId: "apex-5c532",
+    storageBucket: "apex-5c532.appspot.com",
+    messagingSenderId: "61266754390",
+    appId: "1:61266754390:web:2196c8cc98f0d749a574f7",
+    measurementId: "G-HZ0T9009ZM"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+var storage = firebase.storage();
 
 
 
@@ -365,24 +379,20 @@ app.get("/userlogout", function(req, res){
     res.redirect("/userlogin");
   });
 //*********************************************************USERS POST ROUTES**************************************************************************/
-app.post("/userreg",upload.fields([{name:"profileimage", maxCount: 1}, {name:"aadharfrontimage", maxCount: 1},{name:"aadharbackimage", maxCount: 1}]), async function(req, res){
+app.post("/userreg",function(req, res){
     
-    console.log(req.headers)
-    console.log(req.body)
     
-    const verify = req.body.accountverified;
-    const rejectCount = req.body.regrejectcount;
-    const aadharnumber = req.body.username;
-        if(verify === "false" || rejectCount>3){
-            res.status(401).send({ error: "Not Authorized" });
-    }else{
-        const pimg = req.files["profileimage"][0].path;
-        const afimg = req.files["aadharfrontimage"][0].path;
-        const abimg = req.files["aadharbackimage"][0].path;
-        const pimgupload = await cloudinary.v2.uploader.upload(pimg, {folder:"users/"+aadharnumber+""});
-        const afimgupload = await cloudinary.v2.uploader.upload(afimg, {folder:"users/"+aadharnumber+""});
-        const abimgupload = await cloudinary.v2.uploader.upload(abimg, {folder:"users/"+aadharnumber+""});
-        User.register({username: req.body.username, regaccepted: false, regrejected: false, accountverified:true, regrejectcount:0, votecasted:false, profileimage: pimgupload.secure_url, aadharfrontimage: afimgupload.secure_url, aadharbackimage: abimgupload.secure_url}, req.body.password, function(err){
+    console.log('body',req.body)
+    console.log('File',req.files)
+    
+   
+        // const pimg = req.files["profileimage"][0].path;
+        // const afimg = req.files["aadharfrontimage"][0].path;
+        // const abimg = req.files["aadharbackimage"][0].path;
+        // const pimgupload = await cloudinary.v2.uploader.upload(pimg, {folder:"users/"+aadharnumber+""});
+        // const afimgupload = await cloudinary.v2.uploader.upload(afimg, {folder:"users/"+aadharnumber+""});
+        // const abimgupload = await cloudinary.v2.uploader.upload(abimg, {folder:"users/"+aadharnumber+""});
+        User.register({username: req.body.username, regaccepted: false, regrejected: false, accountverified:true, regrejectcount:0, votecasted:false, profileimage: req.body.profileimg, aadharfrontimage: req.body.aadharfrontimg, aadharbackimage: req.body.aadharbackimg}, req.body.password, function(err){
             if(err){
                 console.log(err);
                 res.status(502).send({ error: "Something went wrong!" });
@@ -392,8 +402,9 @@ app.post("/userreg",upload.fields([{name:"profileimage", maxCount: 1}, {name:"aa
                 });
             }
         });
-    }    
+        
 });
+
 app.post("/userlogin", function(req, res){
     const newUser = new User({
         username: req.body.username,
