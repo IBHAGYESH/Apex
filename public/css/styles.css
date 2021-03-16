@@ -61,3 +61,66 @@ background-size: cover;
   color: #fff;
   background-color: #000;
 }
+.centered {
+  padding-top: 200px;
+  text-align: center;
+}
+
+.secret-text {
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
+}
+
+.verifypimg1 {
+  position: relative;
+  margin-top: 100px;
+  margin-left: 20px;
+  width: 200px;
+  height: 200px;
+}
+.verifypimg2 {
+  position: relative;
+  top: -70px;
+  left: 10px;
+  margin: 10px;
+  width: 300px;
+  height: 200px;
+}
+.verifypimg3 {
+  position: relative;
+  bottom: -70px;
+  left: 10px;
+  margin-top: 200px;
+  margin-left: -310px;
+  width: 300px;
+  height: 200px;
+}
+.box {
+  position: relative;
+  max-width: 90%;
+  height: 500px;
+  margin: 50px auto;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3);
+}
+.item {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.aadharnumber {
+}
+.name {
+}
+.email {
+}
+.userinfo {
+  position: relative;
+  top: -350px;
+  left: 800px;
+}

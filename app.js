@@ -278,6 +278,7 @@ app.get("/getadata", function(req, res){
 app.get("/userverification", function(req, res){
     if(req.isAuthenticated()){
         User.aggregate([
+            { $match : { "regaccepted" : false, "regrejected": false } },
             {
               $lookup:
                 {
@@ -287,11 +288,10 @@ app.get("/userverification", function(req, res){
                   as: "userinfo"
                 }
            },
-           { $match : { regaccepted : "false", regrejected: "false" } },
+           
            { $unwind : "$userinfo" }
          ]).exec(function(err,results){
              if(err) throw err;
-             console.log(results);
              res.render("userverification", {newListItems: results});
             });
         // User.find({regaccepted:false}, function(err, foundItems){
@@ -307,26 +307,6 @@ app.get("/userverification", function(req, res){
     }
 });
 //*********************************************************ADMIN AREA POST ROUTES***********************************************************************/  
-app.post("/delete", function(req, res){
-    const checkedItemId = req.body.checkbox;
-    const listName = req.body.listName;
-  
-    if (listName === "Today") {
-      Item.findByIdAndRemove(checkedItemId, function(err){
-        if (!err) {
-          console.log("Successfully deleted checked item.");
-          res.redirect("/");
-        }
-      });
-    } else {
-      List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, function(err, foundList){
-        if (!err){
-          res.redirect("/" + listName);
-        }
-      });
-    }
-});
-
 app.post("/adminreg", function(req, res){
     Admin.register({username: req.body.username, fname: req.body.fname, lname: req.body.lname}, req.body.password, function(err){
         if(err){
@@ -376,22 +356,22 @@ app.post("/newadata", function(req, res){
     });
 });
 app.post("/regaccept", function(req, res){
-    User.update({_id: req.body.accept},{ $set: {regaccepted:true}} ,function(err){
+    User.updateOne({_id: req.body.accept},{ $set: {regaccepted:true}} ,function(err){
         if(!err){
             res.status(200);
             res.redirect("/userverification")
         }else{
-            res.status(502).sendStatus(err);
+            res.status(502).send({ error: "Something went wrong!" });
         }
     });
 });
 app.post("/regreject", function(req, res){
-    User.update({_id: req.body.reject}, {$set:{regrejected:true, rejectCount:rejectCount+1}} ,function(err){
+    User.updateOne({_id: req.body.reject}, {$set:{regrejected:true }}, {$inc : {regrejectcount : 1}} ,function(err){
         if(!err){
             res.status(200);
             res.redirect("/userverification")
         }else{
-            res.status(502).sendStatus(err);
+            res.status(502).send({ error: "Something went wrong!" });
         }
     });
 });
