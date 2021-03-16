@@ -69,6 +69,9 @@ Twelve-Factor App methodology.<br/>
 **admin registration** : /adminreg <br/>
 **party admin login** : /partyadminlogin <br/>
 **party admin registration** : /partyadminadminreg <br/>
+**partymember registration** : /partymemberreg <br/>
+**partymember verification** : /partymemberverification <br/>
+**user registration** : /userreg <br/>
 **user verification** : /userverification <br/>
 
 ## Developers: 
