@@ -31,13 +31,13 @@ On the Day of Election Voter would have to login and put a vote to the desired c
 `npm install` or `npm i`<br/>
 **3. Open the server's folder and set up a .env file and paste the following in it**
 ```
-SESSION_SECRET=secret1
-CLOUDINARY_CLOUD_NAME=ddgnxopcv
-CLOUDINARY_KEY=359437366889111
-CLOUDINARY_SECRET=qCOsEIdEiFQTzrbFEZCXMSgpQPU
-USER_NAME=admin-bhagyesh
-PASSWORD=test123
-DB_NAME=ApexEvoting
+SESSION_SECRET=<enter_your_server_sectret>
+CLOUDINARY_CLOUD_NAME=<your_cloudinary_cloud>
+CLOUDINARY_KEY=<your_cloudinary_cloud_key>
+CLOUDINARY_SECRET=<your_cloudinary_secret_key>
+USER_NAME=<your_mongo_cluster_username>
+PASSWORD=<your_mongo_cluster_password>
+DB_NAME=<your_mongo_cluster_database>
 ```
 **4. To open client side type `npm start` in CLI**
 **5. To open backend type 'nodemon app.js**
